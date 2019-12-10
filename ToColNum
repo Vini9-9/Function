@@ -1,3 +1,5 @@
 Public Function ToColNum(ColN)
     ToColNum = Range(ColN & 1).Column
 End Function
+
+'Adicionado titulo
