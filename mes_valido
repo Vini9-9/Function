@@ -1,0 +1,11 @@
+Public Function mes_valido(mes_ref) As Integer
+
+    Do While mes_ref > 12 Or mes_ref < 1
+    
+    mes_ref = InputBox("Você não digitou um número entre 1 e 12." & Chr(13) & "Por favor, digite o número do mês que gostaria:")
+    
+    Loop
+    
+    mes_valido = mes_ref
+
+End Function
