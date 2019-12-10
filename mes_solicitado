@@ -1,0 +1,47 @@
+'Receber a informação de um mês informado pelo usuário, 
+'validar se a informação é valida e retornar o que foi solicitado de maneira simples ao usuário.
+
+Public Function mes_solicitado(mes_ant)
+
+ano = Year(Now)
+ano_ant = ano - 1
+
+nome_mes_ant = StrConv(MonthName(mes_ant), vbProperCase)
+
+If mes_ant = 12 Then
+
+    resultado = MsgBox("Selecionar o arquivo referente a" & mes_ant & " - " & Left(nome_mes_ant, 3) & Right(ano_ant, 2) & " ?", vbYesNo)
+
+If resultado = vbYes Then
+    
+    mes_ref = mes_ant
+
+Else
+    
+    mes_ref = InputBox("Digite o número do mês que gostaria")
+    
+    mes_ref = mes_valido(mes_ref)
+    
+End If
+
+Else
+   
+   resultado = MsgBox("Selecionar o arquivo referente a " & mes_ant & " - " & Left(nome_mes_ant, 3) & Right(ano, 2) & " ?", vbYesNo)
+
+If resultado = vbYes Then
+   
+   mes_ref = mes_ant
+    
+Else
+
+    mes_ref = InputBox("Digite o número do mês que gostaria")
+    
+    mes_ref = mes_valido(mes_ref)
+    
+End If
+
+End If
+
+mes_solicitado = mes_ref
+
+End Function
