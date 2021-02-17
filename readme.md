@@ -21,3 +21,13 @@ Recebe uma referência de célula como parâmetro e devolve a letra corresponden
 ## ToColNum
 
 Recebe uma referência de célula como parâmetro e devolve número correspondente a coluna.
+
+## out_diferenca
+
+Função que recebe strOld e strCurrent como Strings com nomes separado por um mesmo delimitor.
+Retorna o que estava na strOld e não está mais na strCurrent. 
+
+## new_diferenca
+
+Função que recebe strOld e strCurrent como Strings com nomes separado por um mesmo delimitor.
+Retorna o que está na strCurrent e que não estava na strOld.
