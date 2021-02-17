@@ -31,3 +31,8 @@ Retorna o que estava na strOld e não está mais na strCurrent.
 
 Função que recebe strOld e strCurrent como Strings com nomes separado por um mesmo delimitor.
 Retorna o que está na strCurrent e que não estava na strOld.
+
+## new_unicos
+
+Função que recebe uma String com um delimitador.
+Retorna apenas valores únicos dentre os informados entre os delimitadores.
