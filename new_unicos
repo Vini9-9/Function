@@ -1,0 +1,56 @@
+' Função que recebe uma String com um delimitador.
+' Retorna apenas valores únicos dentre os informados entre os delimitadores.
+
+Function new_unicos(strCurrent As String, delimitador As String)
+
+'Criando os Arrays
+
+arrSplitCurrent = Split(strCurrent, delimitador)
+
+'Comparando os Arrays
+
+For u = LBound(arrSplitCurrent, 1) To UBound(arrSplitCurrent, 1)
+    
+    Unico = False
+    
+    For c = LBound(arrSplitCurrent, 1) To UBound(arrSplitCurrent, 1)
+    
+        If arrSplitCurrent(c) = arrSplitCurrent(u) And c <> u Then
+            GoTo proximo
+        Else
+            arrSplitUnicos = Split(output, delimitador)
+            
+            For y = LBound(arrSplitUnicos, 1) To UBound(arrSplitUnicos, 1)
+                
+                If arrSplitCurrent(u) = Trim(arrSplitUnicos(y)) Then
+                    GoTo proximo
+                End If
+            
+            Next y
+            
+            Unico = True
+            Exit For
+        
+        End If
+    
+    Next c
+
+    If Unico Then
+       
+        If output = "" Then
+        
+            output = arrSplitCurrent(u)
+        Else
+            
+            output = arrSplitCurrent(u) & " ; " & output
+        End If
+        
+    End If
+
+proximo:
+
+Next u
+
+new_unicos = output
+
+End Function
