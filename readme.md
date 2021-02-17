@@ -36,3 +36,7 @@ Retorna o que está na strCurrent e que não estava na strOld.
 
 Função que recebe uma String com um delimitador.
 Retorna apenas valores únicos dentre os informados entre os delimitadores.
+
+## nomes_incompletos
+
+Função que valida os nomes em uma planilha e substitui pelo nome completo da pessoa baseado em uma lista de funcionários  
