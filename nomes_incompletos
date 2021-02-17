@@ -1,0 +1,321 @@
+Sub nomes_incompletos()
+
+periodico = MsgBox("Adicionar nome completo a uma coluna 'OBS.:'?", vbYesNo)
+
+If periodico = vbNo Then
+
+ MsgBox "Iremos substituir o nome", vbExclamation, "Atenção"
+
+End If
+
+Dim myRange As Range
+ 
+On Error GoTo MSGerror
+ 
+ Set myRange = Application.InputBox(prompt:= _
+ "Selecione as células que deseja encontrar o nome na lista de ativos" & Chr(10) & _
+ "Caso a seleção esteja filtrada favor selecionar cada célula individualmente", _
+ Title:="Encontrar nomes incompletos", Type:=8)
+ 
+
+'ActiveSheet.Range("$A$2:$H$6801").AutoFilter Field:=3, Criteria1:= _
+        "=*souza silva", Operator:=xlAnd, Criteria2:="=anderson*"
+
+Dim cell As Object
+Dim count As Integer
+Dim name As String
+Dim num_name, num_name_junto As Integer
+Dim wsAtivos As Worksheet
+Dim wsOriginal As Worksheet
+Set wsOriginal = Workbooks(ActiveWorkbook.name).Worksheets(ActiveSheet.name)
+Dim coluna As Integer
+
+caminho = caminho_arquivos_periodicos
+
+'DADOS_FUNCIONARIOS.xls é um arquivo com os nomes completos dos funcionários.
+Workbooks.Open Filename:=caminho & "\DADOS_FUNCIONARIOS.xls", ReadOnly:=False
+Set wsAtivos = Workbooks(ActiveWorkbook.name).Worksheets(ActiveSheet.name)
+
+wsOriginal.Activate
+
+'Fazer para todas células selecionadas
+
+ If myRange Is Nothing Then
+ MsgBox ("Range vazio")
+ Exit Sub
+    Else
+ myRange.Select
+ End If
+
+For Each c In myRange.Cells
+cel_selec = cel_selec + 1
+qtd_celulas = qtd_celulas + 1
+Next
+
+contador = 1
+
+For Each c In myRange.Cells
+    
+    posicao_cel = posicao_cel + 1
+    
+    If c.Value = "" Then
+        
+        MsgBox ("O nome está vazio")
+    
+        Exit Sub
+        
+    Else
+        
+        name_address = c.Address
+    
+    'Para periodico
+    
+    If periodico = vbYes Then
+        
+        coluna = [A1: IV20].Find("OBS.:").Column
+    
+    Else
+    
+        coluna = c.Column
+        
+    End If
+        
+    name = Trim(Range(name_address).Value)
+        
+        If name = "-" Then GoTo proximo
+        
+            name_obs = Cells(Range(name_address).Row, coluna).Address
+            
+            'NÚM.CARACT(O440)
+            num_name = Len(name)
+            '---
+            'SUBSTITUIR(O440;" ";"")
+            name_junto = Replace(name, " ", "")
+            '---
+            'NÚM.CARACT(SUBSTITUIR(O440;" ";""))
+            num_name_junto = Len(name_junto)
+            '---
+            'Nome com marcação
+            c = Replace(name, " ", "*", 1, 2)
+            
+            'Posição que * está
+            d = InStr(1, c, "*")
+            
+            'Traz o primeiro nome
+            first_name = Left(c, d - 1)
+            
+            'Traz o sobrenome
+            sobrenome = Right(name, num_name - d)
+            
+            '----
+            
+            wsAtivos.Activate
+            
+            On Error GoTo continuar
+            ActiveSheet.ShowAllData
+        
+continuar:  LAstRow = Range("A65536").End(xlUp).Row
+        
+            '"=*souza silva", Operator:=xlAnd, Criteria2:="=anderson*"
+            c_sobrenome = "=*"
+            c_sobrenome = c_sobrenome & sobrenome
+            c_firstname = "="
+            c_firstname = c_firstname & first_name
+            c_firstname = c_firstname & "*"
+            
+            'Filtrando na wsAtivos
+            ActiveSheet.Range("$A$2:$H$" & LAstRow).AutoFilter Field:=3, _
+            Criteria1:=c_sobrenome, Operator:=xlAnd, Criteria2:=c_firstname
+            
+            'Validação se não encontrar nada no filtro
+                
+            cel_final = Range("a2").End(xlDown).Address
+        
+            If Range(cel_final).Value = "" Then
+            
+            'Tentar buscar o primeiro e o ultimo nome
+            
+                ActiveSheet.ShowAllData
+            
+            'Filtrando na wsAtivos
+                
+                ActiveSheet.Range("$A$2:$H$" & LAstRow).AutoFilter Field:=3, _
+                Criteria1:=c_firstname, Operator:=xlAnd, Criteria2:=c_sobrenome & "*"
+            
+                cel_final = Range("a2").End(xlDown).Address
+        
+            'End if
+            
+                'Validacão
+                
+            If Range(cel_final).Value <> "" Then
+                
+                Range("a2:a" & LAstRow).SpecialCells(xlCellTypeVisible).Select
+     
+                    Let count = 0
+                
+                    For Each cell In Selection
+                        Let count = count + 1
+                         If count > 2 Then
+                         
+                         Exit For
+                        End If
+                    Next cell
+                    
+              If count = 2 Then
+                     
+                    new_name = Range("c2").End(xlDown).Value
+                    
+                    wsOriginal.Activate
+                    
+                    If UCase(name) <> new_name Then
+                        
+                        validar = MsgBox("O usuário '" & name & "' refere-se ao nome:" & Chr(10) & new_name & " ?", vbYesNo, _
+                        "Nome " & contador & " de " & qtd_celulas)
+                        
+                        If validar = vbYes Then
+                                
+                            Range(name_obs).Value = new_name
+                            
+                        Else
+                                    
+                            Range(name_obs).Value = "VERIFICAR (" & name & ")"
+                                
+                        End If
+                    
+                    Else
+                        
+                        Range(name_obs).Value = new_name
+                        
+                    End If
+                    
+                    
+                    ElseIf count > 2 Then
+                    
+                    Name_search = InputBox("Digite a coordenada da célula do nome: " & Chr(10) & name & Chr(10) & "Caso o nome procurado não esteja entre as opções clique em CANCELAR", "Foi encontrado mais de um nome")
+    
+                        If Name_search = "" Then
+    
+                            wsOriginal.Activate
+        
+                            Range(name_obs).Value = "VERIFICAR (" & name & ")"
+        
+                            Name_search = name_obs
+                    
+                    'se ultima célula
+                    
+                    If (posicao_cel = cel_selec) Then
+                    
+                        MsgBox ("Macro nomes_incompletos finalizada")
+                    
+                    Exit Sub
+                    
+                    Else
+                        
+                        On Error GoTo proximo
+                    
+                    End If
+                    End If
+    
+                        new_name = Range(Name_search).Value
+                        
+                        wsOriginal.Activate
+                        
+                        Range(name_obs).Value = new_name
+                        
+                    End If
+                
+        Else
+                    
+                'MsgBox "Não foi encontrado nenhum nome mesmo referente ao " & name, vbInformation, "Nome " & contador & " de " & qtd_celulas
+                
+                
+                wsOriginal.Activate
+                
+                Range(name_obs).Value = "VERIFICAR (" & name & ")"
+                    
+                    End If
+        Else
+            
+           Range("a2:a" & LAstRow).SpecialCells(xlCellTypeVisible).Select
+     
+                
+                    Let count = 0
+                
+                'contar até 3 no máximo
+                
+                    For Each cell In Selection
+                        Let count = count + 1
+                        If count > 2 Then
+                        Exit For
+                        End If
+                        
+                    Next cell
+                    
+                    If count = 2 Then
+                     
+                    new_name = Range("c2").End(xlDown).Value
+                    
+                    wsOriginal.Activate
+                    
+                    If UCase(name) <> new_name Then
+                    
+                    validar = MsgBox("O nome '" & name & "' refere-se ao '" & new_name & "' ?", vbYesNo, "Nome " & contador & " de " & qtd_celulas)
+                    
+                        If validar = vbYes Then
+                        
+                        Range(name_obs).Value = new_name
+                    
+                            Else
+                            
+                            Range(name_obs).Value = "VERIFICAR (" & name & ")"
+                        
+                        End If
+                
+                    Else
+                    
+                    Range(name_obs).Value = new_name
+                    
+                    End If
+                
+                    ElseIf count > 2 Then
+                    
+                    Name_search = InputBox("Digite a coordenada da célula do nome: " & Chr(10) & name & Chr(10) & "Caso o nome procurado não esteja entre as opções clique em CANCELAR", "Foi encontrado mais de um nome")
+                
+                        If Name_search = "" Then
+                        
+                        wsOriginal.Activate
+                        
+                        Range(name_obs).Value = "VERIFICAR (" & name & ")"
+                        
+                        Else
+                        
+                        new_name = Range(Name_search).Value
+                        
+                        wsOriginal.Activate
+                        
+                        Range(name_obs).Value = new_name
+                        
+                        End If
+            
+        End If
+            
+            End If
+                
+    End If
+    
+    contador = contador + 1
+
+proximo: Next
+
+'End If
+
+MsgBox ("Macro nomes_incompletos finalizada")
+
+Exit Sub
+
+MSGerror:
+
+    MsgBox "Ocorreu algum erro", vbCritical
+
+End Sub
