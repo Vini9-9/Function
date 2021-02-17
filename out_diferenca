@@ -1,0 +1,43 @@
+' Função que recebe strOld e strCurrent como Strings com nomes separado por um mesmo delimitor.
+' Retorna o que estava na strOld e não está mais na strCurrent. 
+
+Function out_diferenca(strOld As String, strCurrent As String, delimitador As String)
+
+'Criando os Arrays
+
+arrSplitOld = Split(strOld, delimitador)
+
+arrSplitCurrent = Split(strCurrent, delimitador)
+
+'Comparando os Arrays
+
+For o = LBound(arrSplitOld, 1) To UBound(arrSplitOld, 1)
+
+    NaoEncontrou = True
+
+    For c = LBound(arrSplitCurrent, 1) To UBound(arrSplitCurrent, 1)
+    
+        If InStr(1, arrSplitOld(o), arrSplitCurrent(c), vbTextCompare) > 0 Then
+        NaoEncontrou = False
+        Exit For
+        End If
+    
+    Next c
+    
+    If NaoEncontrou Then
+       
+        If output = "" Then
+        
+            output = arrSplitOld(o)
+        Else
+            
+            output = arrSplitOld(o) & " , " & output
+        End If
+        
+    End If
+Next o
+
+
+out_diferenca = output
+
+End Function
