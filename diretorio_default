@@ -11,12 +11,12 @@ nome_mes_ref = StrConv(MonthName(mes_ref), vbProperCase)
 
 If mes_ref = 12 Then
     
-    caminho = "\\tdbsbc01\Comum\ComumIT\" & ano_ant & "\Planning & Security\Security\SOX\CONTROLES PERIÓDICOS IT\" & mes_ref & " - " & Left(nome_mes_ref, 3) & Right(ano_ant, 2) & "\4 Usuários Ativos"
+    caminho = "\Comum\" & ano_ant & "\CONTROLES PERIÓDICOS\" & mes_ref & " - " & Left(nome_mes_ref, 3) & Right(ano_ant, 2) & "\pasta"
     
 
 Else
    
-   caminho = "\\tdbsbc01\Comum\ComumIT\" & ano & "\Planning & Security\Security\SOX\CONTROLES PERIÓDICOS IT\" & mes_ref & " - " & Left(nome_mes_ref, 3) & Right(ano, 2) & "\4 Usuários Ativos"
+   caminho = "\Comum\" & ano & "CONTROLES PERIÓDICOS\" & mes_ref & " - " & Left(nome_mes_ref, 3) & Right(ano, 2) & "\pasta"
    
 End If
 
